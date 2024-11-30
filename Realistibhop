@@ -746,7 +746,7 @@ function Physics:ApplyAirAcceleration(wishDir: Vector3, wishSpeed: number)
     currentSpeed = currentVelocity:Dot(wishDir)
     addSpeed = wishSpeed - currentSpeed
  
-    -- if were not adding speed, dont do anything
+    -- if we're not adding speed, dont do anything
     if addSpeed <= 0 then return end
  
     -- get accelSpeed, cap at addSpeed
@@ -920,47 +920,3 @@ Init()
 UserInputService.InputBegan:Connect(InputBegan)
 UserInputService.InputEnded:Connect(InputEnded)
 RunService.RenderStepped:Connect(Update)
-
-local player = game.Players.LocalPlayer
-local char = player.Character
-local RunService = game:GetService("RunService")
-
-char.Humanoid.CameraOffset = Vector3.new(0, 0, -1)
-
-for i, v in pairs(char:GetChildren()) do
-    if v:IsA("BasePart") and v.Name ~= "Head" then
-
-        v:GetPropertyChangedSignal("LocalTransparencyModifier"):Connect(function()
-            v.LocalTransparencyModifier = v.Transparency
-        end)
-
-        v.LocalTransparencyModifier = v.Transparency
-
-    end
-end
-
-RunService.RenderStepped:Connect(function(step)
-    local ray = Ray.new(char.Head.Position, ((char.Head.CFrame + char.Head.CFrame.LookVector * 2) - char.Head.Position).Position.Unit)
-    local ignoreList = char:GetChildren()
-
-    local hit, pos = game.Workspace:FindPartOnRayWithIgnoreList(ray, ignoreList)
-
-    if hit then
-        char.Humanoid.CameraOffset = Vector3.new(0, 0, -(char.Head.Position - pos).magnitude)
-    else
-        char.Humanoid.CameraOffset = Vector3.new(0, 0, -1)
-    end
-end)
-
-local runService=game:GetService("RunService")
-local camera=workspace.Camera
-local fov=110
-
-
-runService.RenderStepped:Connect(function()
-    camera.FieldOfView=fov
-    if fov>=120 then
-        local dv=(1.7320508075688767((camera.ViewportSize.Y/2)/math.tan(math.rad(fov/2))))/(camera.ViewportSize.Y/2)
-        camera.CFrame=CFrame.new(0,0,0,dv,0,0,0,dv,0,0,0,1)
-    end
-end)
